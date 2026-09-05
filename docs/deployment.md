@@ -100,6 +100,7 @@ Estos puntos no son opcionales si la plataforma va a recibir usuarios reales:
 | **Datos del responsable legal** | Los documentos legales llevan marcadores de posición; sin datos reales no cumplen la Ley 29733 | Define `LEGAL_ORGANIZATION`, `LEGAL_CONTACT_EMAIL` y `LEGAL_ADDRESS` |
 | **Revisión legal de los textos** | Los redactamos como borrador informado, no como asesoría | Que los revise alguien cualificado antes de publicarlos |
 | **SMTP real** | Sin él la recuperación de contraseña no llega a nadie | Define `SMTP_HOST` y credenciales |
+| **Resend** | Alternativa sencilla para el correo transaccional | Define `RESEND_API_KEY` y `RESEND_FROM` |
 | **Almacenamiento persistente de imágenes** | El disco de Render es efímero: las fotos desaparecen en cada despliegue | Monta un disco persistente y apunta `UPLOAD_DIR`, o usa S3/Cloudinary |
 | **Redis** | Sin él los límites de peticiones cuentan por instancia | Define `REDIS_URL` |
 | **Copias de seguridad** | Sin ellas, un fallo de la base es irreversible | Activa los backups automáticos del proveedor |
@@ -116,6 +117,24 @@ Estos puntos no son opcionales si la plataforma va a recibir usuarios reales:
       desarrollo en lugar de fallar.
 - [ ] La base de datos no está expuesta a internet.
 - [ ] HTTPS activo (Render y Vercel lo proporcionan automáticamente).
+
+## 6. Checklist de salida (imagen de entrega)
+
+- [ ] **Publicar en GitHub:** subir el repositorio, proteger la rama principal y activar
+      el workflow de CI de [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
+- [ ] **Desplegar en Render + Vercel:** importar [`render.yaml`](../render.yaml),
+      configurar `VITE_API_URL` y copiar `FRONTEND_URL` al servicio de Render.
+- [ ] **Capturas para el README:** capturar portada, explorador, detalle de mascota,
+      panel de adoptante, panel de refugio y panel de administración; guardarlas en
+      `docs/screenshots/` y enlazarlas desde el README.
+- [ ] **API key de Resend:** crear la clave en Resend, verificar el dominio remitente,
+      configurar `RESEND_API_KEY` y `RESEND_FROM` como secretos de producción.
+- [ ] **Revisión legal:** completar `LEGAL_*` y hacer revisar
+      [`TermsPage.jsx`](../frontend/src/pages/legal/TermsPage.jsx) y
+      [`PrivacyPage.jsx`](../frontend/src/pages/legal/PrivacyPage.jsx) antes de abrir el registro.
+- [ ] **Redis, backups, disco y monitorización:** configurar `REDIS_URL`, almacenamiento
+      persistente para `UPLOAD_DIR`, backups automáticos de PostgreSQL y alertas para
+      `/api/health` y los errores del servicio.
 
 ## Problemas frecuentes
 

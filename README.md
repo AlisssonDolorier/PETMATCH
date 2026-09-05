@@ -148,6 +148,7 @@ Documentación ampliada:
 - [`docs/database/`](docs/database/README.md) — modelo relacional y diagrama ER.
 - [`docs/api/`](docs/api/README.md) — referencia de endpoints.
 - [`docs/deployment.md`](docs/deployment.md) — despliegue paso a paso.
+- [`docs/informe-trabajo.md`](docs/informe-trabajo.md) — informe detallado del trabajo realizado.
 
 ## Instalación
 

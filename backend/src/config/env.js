@@ -62,6 +62,10 @@ export const env = {
     password: process.env.SMTP_PASSWORD || null,
     from: process.env.SMTP_FROM || 'PetMatch <no-reply@petmatch.example>'
   },
+  resend: {
+    apiKey: process.env.RESEND_API_KEY || null,
+    from: process.env.RESEND_FROM || 'PetMatch <no-reply@petmatch.example>'
+  },
 
   /** Subida de fotografías (§60). */
   uploads: {

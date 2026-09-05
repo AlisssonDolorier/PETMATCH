@@ -24,7 +24,8 @@ let transporter = null;
  * transporte por bueno, el enlace tampoco aparecería en la consola: la
  * recuperación de contraseña quedaría inservible sin que nadie se enterase.
  */
-export const hasRealTransport = () => Boolean(env.smtp.host && env.smtp.password);
+export const hasRealTransport = () =>
+  Boolean(env.resend.apiKey || (env.smtp.host && env.smtp.password));
 
 function getTransporter() {
   if (transporter) return transporter;
@@ -52,6 +53,24 @@ function getTransporter() {
 
 async function send({ to, subject, text, html }) {
   try {
+    if (env.resend.apiKey) {
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${env.resend.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ from: env.resend.from, to: [to], subject, text, html })
+      });
+
+      if (!response.ok) {
+        const details = await response.text();
+        throw new Error(`Resend respondió ${response.status}: ${details}`);
+      }
+
+      return response.json();
+    }
+
     const info = await getTransporter().sendMail({
       from: env.smtp.from,
       to,
@@ -60,7 +79,7 @@ async function send({ to, subject, text, html }) {
       html
     });
 
-    if (!hasRealTransport() && !env.isTest) {
+    if (!env.resend.apiKey && !hasRealTransport() && !env.isTest) {
       console.log(`\n--- Correo para ${to} ---\n${subject}\n${text}\n---\n`);
     }
     return info;
