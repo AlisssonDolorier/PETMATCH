@@ -13,15 +13,9 @@ Render**. Al final hay una alternativa con Docker Compose.
    - `JWT_SECRET`, generado como valor aleatorio.
 4. Define `FRONTEND_URL` a mano cuando tengas el dominio de Vercel (paso 2.5).
    Sin este valor, CORS rechazará las peticiones del frontend.
-5. Cuando el servicio esté desplegado, abre su **Shell** y ejecuta:
-
-   ```bash
-   npm run db:migrate     # crea el esquema
-   npm run db:seed        # datos de demostración (opcional)
-   ```
-
-   > Antes de sembrar en un entorno público, cambia `SEED_ADMIN_PASSWORD`: las
-   > credenciales por defecto son públicas porque están en este repositorio.
+5. El comando de arranque de Render ejecuta `npm run db:migrate` antes de
+   iniciar la API. Revisa el registro del despliegue para confirmar el resultado.
+   Las migraciones ya aplicadas se omiten en los reinicios.
 
 6. Comprueba <https://tu-api.onrender.com/api/health>. Debe responder
    `"database": "postgresql"`. Si dice `"memory"`, falta `DATABASE_URL`.
