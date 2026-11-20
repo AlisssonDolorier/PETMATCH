@@ -167,3 +167,17 @@ gh pr create --base develop --title "feat: lo que sea" --fill
 - [ ] `main` protegido, exigiendo PR y CI
 - [ ] Milestones creados y con Issues asignados
 - [ ] Los Issues ya resueltos, cerrados
+
+## Evidencias de las semanas 7 a 15
+
+| Semana | Evidencia de PetMatch |
+| --- | --- |
+| 7 | Repositorio compartido y commits de dos cuentas. [Cambio de registro de Luxznff](https://github.com/AlisssonDolorier/PETMATCH/commit/54e982f) e [integración de AlisssonDolorier](https://github.com/AlisssonDolorier/PETMATCH/commit/6b0b9f6). |
+| 8 | Ramas main y develop. El [PR 1](https://github.com/AlisssonDolorier/PETMATCH/pull/1) integró dos historiales, resolvió el conflicto del README y conservó la especificación PDF. |
+| 9 | El historial ayuda a recuperar cambios perdidos y las ramas con PR ayudan a detectar cambios incompatibles antes de integrarlos. La revisión de un compañero se registra en el PR y la documentación técnica vive en el repositorio. |
+| 10 | El [hito de entrega](https://github.com/AlisssonDolorier/PETMATCH/milestone/1) agrupa los tickets. Para el tamaño del equipo y la necesidad de enlazar código y tareas, GitHub Issues permite seguir el trabajo desde el mismo repositorio. |
+| 11 | La [tarea de evidencias](https://github.com/AlisssonDolorier/PETMATCH/issues/2) pasa de en curso a revisión con el PR y se cierra al fusionarlo. En GitHub Projects se podría seguir ese mismo ticket como tarjeta. En Trello se podría mover una tarjeta de validación del registro de Por hacer a Hecho y adjuntar el enlace al PR. |
+| 12 | El [incidente 3](https://github.com/AlisssonDolorier/PETMATCH/issues/3) documenta la diferencia de fechas según la zona horaria, la corrección y su prueba de regresión. |
+| 13 | [GitHub Actions en main](https://github.com/AlisssonDolorier/PETMATCH/actions/runs/44734554495) ejecutó lint, migraciones de prueba, 159 pruebas de backend en memoria, las mismas 159 en PostgreSQL, 135 de frontend y la compilación. Las 453 ejecuciones de pruebas aprobaron. |
+| 14 | [v1.4.1](https://github.com/AlisssonDolorier/PETMATCH/releases/tag/v1.4.1) identifica el código validado. El Blueprint de Render aplica migraciones antes de iniciar la API. El [ticket 4](https://github.com/AlisssonDolorier/PETMATCH/issues/4) registra las verificaciones pendientes de producción. |
+| 15 | Render y Vercel permiten centralizar la publicación y delegar infraestructura. El plan gratuito de Render limita el acceso a Shell, por lo que el arranque del servicio incluye la migración. La validación en las URLs finales sigue pendiente. |
