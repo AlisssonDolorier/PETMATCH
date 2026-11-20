@@ -20,13 +20,64 @@ export function toPublicUser(user) {
 }
 
 export async function register(input) {
-  const existing = await userModel.findByEmail(input.email);
+  const normalizedEmail = String(input.email ?? '').trim().toLowerCase();
+  const role = input.role ?? 'ADOPTANTE';
+  const firstName = String(input.firstName ?? '').trim();
+  const lastName = String(input.lastName ?? '').trim();
+  const dni = role === 'ADOPTANTE' ? String(input.dni ?? '').trim() : undefined;
+  const shelterName = role === 'REFUGIO' ? String(input.shelterName ?? '').trim() : undefined;
+  const responsibleName = role === 'REFUGIO' ? String(input.responsibleName ?? '').trim() : undefined;
+  const ruc = role === 'REFUGIO' ? String(input.ruc ?? '').trim() : undefined;
+  const responsibleDni = role === 'REFUGIO' ? String(input.responsibleDni ?? '').trim() : undefined;
+  const normalizedFirstName = role === 'REFUGIO' ? (firstName || shelterName || 'Refugio') : firstName;
+  const normalizedLastName = role === 'REFUGIO' ? (lastName || responsibleName || '') : lastName;
+
+  if (role === 'ADMINISTRADOR') {
+    throw ApiError.unprocessable('No puedes crear una cuenta de administrador');
+  }
+
+  if (role === 'ADOPTANTE' && !/^\d{8}$/.test(dni)) {
+    throw ApiError.unprocessable('El DNI es obligatorio para crear una cuenta de adoptante');
+  }
+
+  if (role === 'REFUGIO') {
+    if (!shelterName) {
+      throw ApiError.unprocessable('El nombre del refugio es obligatorio para crear una cuenta de refugio');
+    }
+    if (!responsibleName) {
+      throw ApiError.unprocessable('El nombre del responsable es obligatorio para crear una cuenta de refugio');
+    }
+    if ((!ruc || !/^\d{11}$/.test(ruc)) && (!responsibleDni || !/^\d{8}$/.test(responsibleDni))) {
+      throw ApiError.unprocessable('Debe indicar un RUC del refugio o el DNI del responsable');
+    }
+  }
+
+  if (input.acceptedTerms !== true || input.acceptedPrivacy !== true) {
+    throw ApiError.unprocessable('Debes aceptar los términos y la política de privacidad');
+  }
+
+  const existing = await userModel.findByEmail(normalizedEmail);
   if (existing) throw ApiError.conflict('El correo ya está registrado');
 
   const passwordHash = await bcrypt.hash(input.password, env.bcryptRounds);
   // La versión legal aceptada se guarda junto a la cuenta: así queda
   // constancia de a qué texto concreto se comprometió cada persona.
-  const user = await userModel.create({ ...input, legalVersion: LEGAL_VERSION }, passwordHash);
+  const user = await userModel.create(
+    {
+      ...input,
+      firstName: normalizedFirstName || undefined,
+      lastName: normalizedLastName || undefined,
+      email: normalizedEmail,
+      role,
+      dni: dni || undefined,
+      shelterName: shelterName || undefined,
+      responsibleName: responsibleName || undefined,
+      ruc: ruc || undefined,
+      responsibleDni: responsibleDni || undefined,
+      legalVersion: LEGAL_VERSION
+    },
+    passwordHash
+  );
 
   // El correo de confirmación no bloquea el registro: si el envío falla, la
   // cuenta ya existe y siempre puede pedirse otro enlace.
@@ -36,7 +87,7 @@ export async function register(input) {
 }
 
 export async function login({ email, password }) {
-  const user = await userModel.findByEmail(email);
+  const user = await userModel.findByEmail(String(email ?? '').trim().toLowerCase());
 
   // Se compara siempre contra un hash — aunque el usuario no exista — para no
   // revelar por tiempo de respuesta qué correos están registrados.

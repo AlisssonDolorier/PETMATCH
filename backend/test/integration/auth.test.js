@@ -39,6 +39,7 @@ describe('Autenticación', () => {
         lastName: 'Persona',
         email: 'repetido@example.com',
         password: 'Clave123',
+        dni: '12345678',
         city: 'Lima',
         acceptedTerms: true,
         acceptedPrivacy: true
@@ -55,6 +56,7 @@ describe('Autenticación', () => {
         lastName: 'Pérez',
         email: 'debil@example.com',
         password: 'todominuscula',
+        dni: '12345678',
         city: 'Lima',
         acceptedTerms: true,
         acceptedPrivacy: true
@@ -73,12 +75,48 @@ describe('Autenticación', () => {
         lastName: 'Malicioso',
         email: 'intruso@example.com',
         password: 'Clave123',
+        dni: '12345678',
         city: 'Lima',
         acceptedTerms: true,
         acceptedPrivacy: true,
         role: 'ADMINISTRADOR'
       })
       .expect(422);
+  });
+
+  test('requiere nombre y documento del refugio al registrar una cuenta de refugio', async () => {
+    await api
+      .post('/api/auth/register')
+      .send({
+        firstName: 'Ana',
+        lastName: 'Pérez',
+        email: 'refugio@example.com',
+        password: 'Clave123',
+        city: 'Lima',
+        role: 'REFUGIO',
+        shelterName: 'Refugio Esperanza',
+        responsibleName: 'María López',
+        acceptedTerms: true,
+        acceptedPrivacy: true
+      })
+      .expect(422);
+
+    await api
+      .post('/api/auth/register')
+      .send({
+        firstName: 'Ana',
+        lastName: 'Pérez',
+        email: 'refugio@example.com',
+        password: 'Clave123',
+        city: 'Lima',
+        role: 'REFUGIO',
+        shelterName: 'Refugio Esperanza',
+        responsibleName: 'María López',
+        ruc: '20123456789',
+        acceptedTerms: true,
+        acceptedPrivacy: true
+      })
+      .expect(201);
   });
 
   test('devuelve 401 con contraseña incorrecta y con correo inexistente', async () => {

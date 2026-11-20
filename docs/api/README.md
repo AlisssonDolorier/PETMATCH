@@ -34,6 +34,7 @@ inválida · `401` No autenticado · `403` Sin permisos · `404` No encontrado �
   "email": "ana@example.com",
   "password": "Clave123",     // 8+ caracteres, mayúscula, minúscula y número
   "phone": "+51 999 888 777", // opcional
+  "dni": "12345678",          // obligatorio sólo para ADOPTANTE: 8 dígitos
   "city": "Lima",
   "role": "ADOPTANTE",         // ADOPTANTE | REFUGIO
   "acceptedTerms": true,       // obligatorio: debe ser exactamente true
@@ -42,7 +43,8 @@ inválida · `401` No autenticado · `403` Sin permisos · `404` No encontrado �
 ```
 
 La aceptación de ambos documentos es obligatoria y se guarda con su fecha y la
-versión vigente. Tras el registro se envía un correo de confirmación; si el
+versión vigente. Para los adoptantes, el DNI se exige como identificación
+básica de la cuenta. Tras el registro se envía un correo de confirmación; si el
 envío falla, la cuenta se crea igualmente y puede pedirse otro enlace.
 
 `201` → `{ user, token }`. `409` si el correo ya existe, `422` si los datos no

@@ -28,13 +28,21 @@ export default function RegisterPage() {
     setError(null);
 
     const form = new FormData(event.currentTarget);
+    const shelterName = form.get('shelterName')?.toString().trim();
+    const responsibleName = form.get('responsibleName')?.toString().trim();
+
     try {
       const profile = await register({
-        firstName: form.get('firstName'),
-        lastName: form.get('lastName'),
+        firstName: role === 'REFUGIO' ? shelterName || 'Refugio' : form.get('firstName'),
+        lastName: role === 'REFUGIO' ? responsibleName || '' : form.get('lastName'),
         email: form.get('email'),
         password: form.get('password'),
         phone: form.get('phone') || undefined,
+        dni: role === 'ADOPTANTE' ? form.get('dni') || undefined : undefined,
+        shelterName: role === 'REFUGIO' ? shelterName || undefined : undefined,
+        responsibleName: role === 'REFUGIO' ? responsibleName || undefined : undefined,
+        ruc: role === 'REFUGIO' ? form.get('ruc') || undefined : undefined,
+        responsibleDni: role === 'REFUGIO' ? form.get('responsibleDni') || undefined : undefined,
         city: form.get('city'),
         role,
         acceptedTerms: form.get('acceptedTerms') === 'on',
@@ -86,10 +94,47 @@ export default function RegisterPage() {
         </div>
 
         <form onSubmit={handleSubmit} noValidate>
-          <div className="form-row">
-            <Input label="Nombre" name="firstName" required error={fieldError('firstName')} />
-            <Input label="Apellidos" name="lastName" required error={fieldError('lastName')} />
-          </div>
+          {role === 'ADOPTANTE' && (
+            <div className="form-row">
+              <Input label="Nombre" name="firstName" required error={fieldError('firstName')} />
+              <Input label="Apellidos" name="lastName" required error={fieldError('lastName')} />
+            </div>
+          )}
+
+          {role === 'REFUGIO' && (
+            <>
+              <Input
+                label="Nombre del refugio"
+                name="shelterName"
+                required
+                error={fieldError('shelterName')}
+              />
+              <div className="form-row">
+                <Input
+                  label="RUC"
+                  name="ruc"
+                  inputMode="numeric"
+                  pattern="[0-9]{11}"
+                  placeholder="11 dígitos"
+                  error={fieldError('ruc')}
+                />
+              </div>
+              <Input
+                label="Nombre del responsable"
+                name="responsibleName"
+                required
+                error={fieldError('responsibleName')}
+              />
+              <Input
+                label="DNI del responsable"
+                name="responsibleDni"
+                inputMode="numeric"
+                pattern="[0-9]{8}"
+                placeholder="8 dígitos"
+                error={fieldError('responsibleDni')}
+              />
+            </>
+          )}
 
           <Input
             label="Correo electrónico"
@@ -104,6 +149,17 @@ export default function RegisterPage() {
             <Input label="Ciudad" name="city" required error={fieldError('city')} />
             <Input label="Teléfono" name="phone" error={fieldError('phone')} />
           </div>
+
+          {role === 'ADOPTANTE' && (
+            <Input
+              label="DNI"
+              name="dni"
+              inputMode="numeric"
+              pattern="[0-9]{8}"
+              required
+              error={fieldError('dni')}
+            />
+          )}
 
           <Input
             label="Contraseña"

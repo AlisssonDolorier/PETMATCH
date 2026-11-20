@@ -40,12 +40,20 @@ const password = 'Clave123';
 /** Registra una cuenta y devuelve `{ user, token }`. */
 export async function registerUser(overrides = {}) {
   const suffix = Math.random().toString(36).slice(2, 8);
+  const role = overrides.role ?? 'ADOPTANTE';
   const payload = {
     firstName: 'Ana',
     lastName: 'Pérez',
     email: `ana.${suffix}@example.com`,
     password,
     city: 'Lima',
+    ...(role === 'ADOPTANTE'
+      ? { dni: '12345678' }
+      : {
+          shelterName: 'Refugio de prueba',
+          responsibleName: 'Luisa Torres',
+          ruc: '20123456789'
+        }),
     // El registro exige aceptación explícita de los documentos legales.
     acceptedTerms: true,
     acceptedPrivacy: true,

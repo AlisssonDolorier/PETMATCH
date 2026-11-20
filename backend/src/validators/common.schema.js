@@ -24,6 +24,13 @@ export const email = z
   .max(180)
   .transform((value) => value.toLowerCase());
 
+/** Documento nacional de identidad peruano, requerido para quienes adoptan. */
+export const dni = z
+  .string({ message: 'El DNI es obligatorio' })
+  .trim()
+  .regex(/^\d{8}$/, 'Ingresa un DNI válido')
+  .transform((value) => value.toString());
+
 /** Teléfono internacional flexible: dígitos, espacios, guiones y paréntesis. */
 export const phone = z
   .string()

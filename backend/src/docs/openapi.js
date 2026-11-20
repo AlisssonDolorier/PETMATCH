@@ -142,6 +142,11 @@ export const openapi = {
           lastName: { type: 'string' },
           email: { type: 'string', format: 'email' },
           phone: { type: 'string', nullable: true },
+          dni: { type: 'string', nullable: true, description: 'DNI del adoptante, cuando aplica' },
+          shelterName: { type: 'string', nullable: true, description: 'Nombre del refugio para cuentas de refugio' },
+          responsibleName: { type: 'string', nullable: true, description: 'Persona responsable del refugio' },
+          ruc: { type: 'string', nullable: true, description: 'RUC del refugio, cuando aplica' },
+          responsibleDni: { type: 'string', nullable: true, description: 'DNI del responsable del refugio, cuando aplica' },
           address: { type: 'string', nullable: true },
           city: { type: 'string', nullable: true },
           role: { type: 'string', enum: USER_ROLES },
@@ -541,6 +546,29 @@ export const openapi = {
               description: 'Mínimo 8 caracteres con mayúscula, minúscula y número'
             },
             phone: { type: 'string' },
+            dni: {
+              type: 'string',
+              description: 'Obligatorio para ADOPTANTE: DNI de 8 dígitos',
+              pattern: '^\\d{8}$'
+            },
+            shelterName: {
+              type: 'string',
+              description: 'Obligatorio para REFUGIO: nombre del refugio'
+            },
+            responsibleName: {
+              type: 'string',
+              description: 'Obligatorio para REFUGIO: nombre del responsable'
+            },
+            ruc: {
+              type: 'string',
+              description: 'RUC de 11 dígitos del refugio o, si no aplica, el DNI del responsable',
+              pattern: '^\\d{11}$'
+            },
+            responsibleDni: {
+              type: 'string',
+              description: 'DNI del responsable del refugio cuando no se indica RUC',
+              pattern: '^\\d{8}$'
+            },
             address: { type: 'string' },
             city: { type: 'string' },
             role: { type: 'string', enum: ['ADOPTANTE', 'REFUGIO'], default: 'ADOPTANTE' },

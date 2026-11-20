@@ -24,6 +24,11 @@ const map = (row) =>
     email: row.email,
     passwordHash: row.password_hash,
     phone: row.phone,
+    dni: row.dni ?? null,
+    shelterName: row.shelter_name ?? null,
+    responsibleName: row.responsible_name ?? null,
+    ruc: row.ruc ?? null,
+    responsibleDni: row.responsible_dni ?? null,
     address: row.address,
     city: row.city,
     avatarUrl: row.avatar_url,
@@ -52,19 +57,26 @@ export async function findByEmail(email) {
 
 export async function create(data, passwordHash) {
   const acceptedAt = new Date().toISOString();
+  const role = data.role ?? 'ADOPTANTE';
+  const email = String(data.email ?? '').trim().toLowerCase();
 
   if (!isPostgres) {
     const user = {
       id: sequences.users.next(),
       firstName: data.firstName,
       lastName: data.lastName,
-      email: data.email,
+      email,
       passwordHash,
       phone: data.phone ?? null,
+      dni: data.dni ?? null,
+      shelterName: data.shelterName ?? null,
+      responsibleName: data.responsibleName ?? null,
+      ruc: data.ruc ?? null,
+      responsibleDni: data.responsibleDni ?? null,
       address: data.address ?? null,
       city: data.city ?? null,
       avatarUrl: null,
-      role: data.role,
+      role,
       status: 'ACTIVO',
       emailVerifiedAt: null,
       // Aceptación de los documentos legales en el momento del registro.
@@ -79,19 +91,26 @@ export async function create(data, passwordHash) {
   }
 
   const row = await queryOne(
-    `INSERT INTO users (role_id, first_name, last_name, email, password_hash, phone, address, city,
+    `INSERT INTO users (role_id, first_name, last_name, email, password_hash, phone, address, city, dni,
+                        shelter_name, responsible_name, ruc, responsible_dni,
                         terms_accepted_at, privacy_accepted_at, legal_version)
-     VALUES ((SELECT id FROM roles WHERE name = $1), $2, $3, $4, $5, $6, $7, $8, $9, $9, $10)
+     VALUES ((SELECT id FROM roles WHERE name = $1), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
      RETURNING id`,
     [
-      data.role,
+      role,
       data.firstName,
       data.lastName,
-      data.email,
+      email,
       passwordHash,
       data.phone ?? null,
       data.address ?? null,
       data.city ?? null,
+      data.dni ?? null,
+      data.shelterName ?? null,
+      data.responsibleName ?? null,
+      data.ruc ?? null,
+      data.responsibleDni ?? null,
+      acceptedAt,
       acceptedAt,
       data.legalVersion
     ]

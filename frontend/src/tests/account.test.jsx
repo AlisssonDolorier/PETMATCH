@@ -50,6 +50,7 @@ describe('Registro con aceptación legal', () => {
     await user.type(screen.getByLabelText(/Apellidos/), 'Pérez');
     await user.type(screen.getByLabelText(/Correo electrónico/), 'ana@example.com');
     await user.type(screen.getByLabelText(/Ciudad/), 'Lima');
+    await user.type(screen.getByLabelText(/DNI/i), '12345678');
     await user.type(screen.getByLabelText(/Contraseña/), 'Clave123');
     await user.click(screen.getByRole('checkbox', { name: /acepto los/i }));
     await user.click(screen.getByRole('checkbox', { name: /He leído la/i }));
@@ -59,6 +60,22 @@ describe('Registro con aceptación legal', () => {
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(body.acceptedTerms).toBe(true);
     expect(body.acceptedPrivacy).toBe(true);
+  });
+
+  test('muestra el flujo de refugio sin nombre ni apellidos del responsable', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<RegisterPage />, { route: '/registro' });
+
+    await user.click(screen.getByRole('radio', { name: /Represento un refugio/i }));
+
+    expect(screen.queryByLabelText(/^Nombre$/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Apellidos/i)).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/Nombre del refugio/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/RUC/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Nombre del responsable/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/DNI del responsable/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Correo electrónico/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Contraseña/i)).toBeInTheDocument();
   });
 });
 
